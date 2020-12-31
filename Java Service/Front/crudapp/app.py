@@ -14,9 +14,17 @@ def hello():
 @app.route('/agence')
 def agence():
     res = requests.get("http://localhost:9191/agences")
-    res = list(res.json())
-    context = res
-    return render_template('agence.html',contexts=context)
+    context = list(res.json())
+    # context[0]['comptes'].append({"name": "Visa"})
+    # context[1]['comptes'].append({"name": "Master Card"})
+
+    r = requests.get("http://localhost:9191/comptes")
+    comptes = list(r.json())
+    # print(comptes)
+
+    # print(context)
+    
+    return render_template('agence.html',contexts=context,comptes=comptes)
 
 @app.route('/ajouterAgence', methods=['POST'])
 def ajouterAgence():
@@ -24,8 +32,18 @@ def ajouterAgence():
     adresse = request.form['adresse']
     nom = request.form['nom']
     telephone = request.form['telephone']
+    comptesId = request.form.getlist('comptes')
+    comptes = []
 
-    x = requests.post('http://localhost:9191/addAgence',json = {"code": code, "adresse": adresse, "nom": nom, "telephone":telephone})
+    for idCompte in comptesId:
+        r = requests.get("http://localhost:9191/comptes/"+idCompte)
+        compte = r.json()
+
+        s = requests.put("http://localhost:9191/comptes/"+idCompte, json = {"code": code, "adresse": adresse, "nom": nom, "telephone":telephone})
+        compte['agence'] = {"code": code, "adresse": adresse, "nom": nom, "telephone":telephone}
+        comptes.append(compte)
+
+    x = requests.post('http://localhost:9191/addAgence',json = {"code": code, "adresse": adresse, "nom": nom, "telephone":telephone, "comptes": comptes})
 
     return redirect(url_for('agence'))
 
