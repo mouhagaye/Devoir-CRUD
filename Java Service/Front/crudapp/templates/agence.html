@@ -44,6 +44,7 @@
 						<th>Nom</th>
 						<th>Telephone</th>
 						<th>Comptes</th>
+						<th>Actions</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -53,6 +54,7 @@
 						<td>{{context.adresse}}</td>
 						<td>{{context.nom}}</td>
 						<td>{{context.telephone}}</td>
+						<td><a href="{{url_for('agenceCompte',code=context.code)}}">Comptes</a></td>
 						<td>
 							<a href="#editAgence" onclick="sendCode('{{context.code}}')" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
 							<a href="{{url_for('deleteAgence',code=context.code)}}" ><i class="material-icons" title="Delete">&#xE872;</i></a>
@@ -145,7 +147,15 @@
 					<div class="form-group">
 						<label>Telephone</label>
 						<input type="text" name="telephone" class="form-control">	
-					</div>					
+					</div>
+					<div class="form-group">
+						<label>Comptes</label>
+						<select name="comptes" multiple data-live-search="true">
+							{% for compte in comptes %}
+							<option value={{compte.id}} >Compte = id: {{compte.id}} solde: {{compte.solde}} decouvert : {{compte.decouvert}}</option>
+							{%endfor%}
+						</select>
+					</div>				
 				</div>
 				<div class="modal-footer">
 					<input type="button" class="btn btn-default" data-dismiss="modal" value="Annuler">
@@ -155,25 +165,5 @@
 		</div>
 	</div>
 </div>
-<!-- Delete Modal HTML -->
-<div id="deleteAgence" class="modal fade">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<form>
-				<div class="modal-header">						
-					<h4 class="modal-title">Supprimer Agence</h4>
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				</div>
-				<div class="modal-body">					
-					<p>Etes vous sure de vouloir supprimer cet agence ?</p>
-					<p class="text-warning"><small>Cet action est irreversible .</small></p>
-				</div>
-				<div class="modal-footer">
-					<input type="button" class="btn btn-default" data-dismiss="modal" value="Annuler">
-					<input type="submit" class="btn btn-danger" value=Supprimer>
-				</div>
-			</form>
-		</div>
-	</div>
-</div>
+
 {% endblock %}

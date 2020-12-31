@@ -38,9 +38,6 @@ def ajouterAgence():
     for idCompte in comptesId:
         r = requests.get("http://localhost:9191/comptes/"+idCompte)
         compte = r.json()
-
-        s = requests.put("http://localhost:9191/comptes/"+idCompte, json = {"code": code, "adresse": adresse, "nom": nom, "telephone":telephone})
-        compte['agence'] = {"code": code, "adresse": adresse, "nom": nom, "telephone":telephone}
         comptes.append(compte)
 
     x = requests.post('http://localhost:9191/addAgence',json = {"code": code, "adresse": adresse, "nom": nom, "telephone":telephone, "comptes": comptes})
@@ -65,11 +62,36 @@ def editAgence():
     adresse = request.form['adresse']
     nom = request.form['nom']
     telephone = request.form['telephone']
+    comptesId = request.form.getlist('comptes')
+    comptes = []
 
-    x = requests.put('http://localhost:9191/updateAgence',json = {"code": code, "adresse": adresse, "nom": nom, "telephone":telephone})
+    for idCompte in comptesId:
+        r = requests.get("http://localhost:9191/comptes/"+idCompte)
+        compte = r.json()
+        comptes.append(compte)
+
+    x = requests.put('http://localhost:9191/addAgence',json = {"code": code, "adresse": adresse, "nom": nom, "telephone":telephone, "comptes": comptes})
+
+
     print(x)
 
     return redirect(url_for('agence'))
+
+@app.route('/agence/<code>', methods=['GET'])
+def agenceCompte(code):
+    url = 'http://localhost:9191/agences/'+code
+    res = requests.get(url)
+    agence = res.json()
+    print(agence)
+    nom = "de l'Agence "+agence['nom']
+
+    comptes = list(agence['comptes'])
+
+    print(nom)
+    print(comptes)
+
+
+    return render_template('agenceCompte.html',comptes=comptes, nom = nom)
 
 
 ############################################################### CLIENT ####################################################################
