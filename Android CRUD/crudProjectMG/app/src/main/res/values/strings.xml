@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Android CrudMG</string>
+    <string name="action_settings">Options</string>
+    <string name="title_activity_add_note">Ajouter Note</string>
+</resources>

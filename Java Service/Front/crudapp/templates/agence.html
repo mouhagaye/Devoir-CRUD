@@ -1,0 +1,170 @@
+{% extends "index.html" %}
+
+{%block header %}
+
+<script>
+    function sendCode(code){
+        // document.querySelector("#codeToEdit").innerHTML = code;
+        // console.log(code);
+
+        var el = document.getElementById('editAgence');
+
+        el.onclick = showFoo;
+        function showFoo() {
+            document.querySelector("#codeToEdit").value = code;
+            console.log(code)
+        }
+
+
+    }
+</script>
+
+{% endblock %}
+
+{% block content %}
+<div class="container-xl">
+	<div class="table-responsive">
+		<div class="table-wrapper">
+			<div class="table-title">
+				<div class="row">
+					<div class="col-sm-6">
+						<h2>Information sur <b>Agences</b></h2>
+					</div>
+					<div class="col-sm-6">
+						<a href="#ajouterAgence"class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Ajouter agence</span></a>
+						<a href="#deleteAgence" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Supprimer</span></a>						
+					</div>
+				</div>
+			</div>
+			<table class="table table-striped table-hover">
+				<thead>
+					<tr>
+						<th >Code</th>
+						<th>Adresse</th>
+						<th>Nom</th>
+						<th>Telephone</th>
+						<th>Comptes</th>
+					</tr>
+				</thead>
+				<tbody>
+                    {% for context in contexts %}
+					<tr>
+						<td>{{context.code}}</td>
+						<td>{{context.adresse}}</td>
+						<td>{{context.nom}}</td>
+						<td>{{context.telephone}}</td>
+						<td>
+							<a href="#editAgence" onclick="sendCode('{{context.code}}')" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+							<a href="{{url_for('deleteAgence',code=context.code)}}" ><i class="material-icons" title="Delete">&#xE872;</i></a>
+						</td>
+                    </tr> 
+                    {% endfor %}
+				</tbody>
+			</table>
+			<div class="clearfix">
+				<div class="hint-text">Showing <b>5</b> out of <b>25</b> entries</div>
+				<ul class="pagination">
+					<li class="page-item disabled"><a href="#">Previous</a></li>
+					<li class="page-item"><a href="#" class="page-link">1</a></li>
+					<li class="page-item"><a href="#" class="page-link">2</a></li>
+					<li class="page-item active"><a href="#" class="page-link">3</a></li>
+					<li class="page-item"><a href="#" class="page-link">4</a></li>
+					<li class="page-item"><a href="#" class="page-link">5</a></li>
+					<li class="page-item"><a href="#" class="page-link">Next</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>        
+</div>
+<!-- Edit Modal HTML -->
+<div id="ajouterAgence" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form method="post" action="{{ url_for('ajouterAgence')}}">
+				<div class="modal-header">						
+					<h4 class="modal-title">Ajouter une agence</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">					
+					<div class="form-group">
+						<label>Code (3 lettres)</label>
+						<input type="text" name="code" class="form-control" required>
+					</div>
+					<div class="form-group">
+						<label>Adresse</label>
+						<input type="text" name="adresse" class="form-control" required>
+					</div>
+					<div class="form-group">
+						<label>Nom</label>
+						<input type="text" name="nom" class="form-control" required>	
+					</div>
+					<div class="form-group">
+						<label>Telephone</label>
+						<input type="text" name="telephone" class="form-control" required>	
+					</div>					
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Annuler">
+					<input id="ajouterAgence" type="submit" class="btn btn-success" value="Enregistrer">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<!-- Edit Modal HTML -->
+<div id="editAgence" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form method="post" action="{{ url_for('editAgence')}}">
+				<div class="modal-header">						
+					<h4 class="modal-title">Modifier Agence</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">					
+					<div class="form-group">
+                        <label>Code de l'agence a Modifier</label>
+						<input id="codeToEdit" type="text" name="code" class="form-control" >
+					</div>
+					<div class="form-group">
+						<label>Adresse</label>
+						<input type="text" name="adresse" class="form-control">
+					</div>
+					<div class="form-group">
+						<label>Nom</label>
+						<input type="text" name="nom" class="form-control" >	
+					</div>
+					<div class="form-group">
+						<label>Telephone</label>
+						<input type="text" name="telephone" class="form-control">	
+					</div>					
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Annuler">
+					<input type="submit" class="btn btn-info" value="Enregistrer">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<!-- Delete Modal HTML -->
+<div id="deleteAgence" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form>
+				<div class="modal-header">						
+					<h4 class="modal-title">Supprimer Agence</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				</div>
+				<div class="modal-body">					
+					<p>Etes vous sure de vouloir supprimer cet agence ?</p>
+					<p class="text-warning"><small>Cet action est irreversible .</small></p>
+				</div>
+				<div class="modal-footer">
+					<input type="button" class="btn btn-default" data-dismiss="modal" value="Annuler">
+					<input type="submit" class="btn btn-danger" value=Supprimer>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}
