@@ -101,7 +101,9 @@ def client():
     res = requests.get("http://localhost:9191/clients")
     res = list(res.json())
     context = res
-    return render_template('client.html',contexts=context)
+    r = requests.get("http://localhost:9191/comptes")
+    comptes = list(r.json())
+    return render_template('client.html',contexts=context,comptes=comptes)
 
 @app.route('/ajouterClient', methods=['POST','GET'])
 def ajouterClient():
@@ -109,11 +111,20 @@ def ajouterClient():
     nom = request.form['nom']
     prenom = request.form['prenom']
 
-    print(date_naissance,nom,prenom)
+    comptesId = request.form.getlist('comptes')
+    comptes = []
 
-    x = requests.post('http://localhost:9191/addClient',json = {"date_naissance": date_naissance, "nom": nom, "prenom":prenom})
+    for idCompte in comptesId:
+        r = requests.get("http://localhost:9191/comptes/"+idCompte)
+        compte = r.json()
+        comptes.append(compte)
 
-    print(x)
+    print(comptes)
+
+    x = requests.post('http://localhost:9191/addClient',json = {"prenom":prenom,"nom": nom,"date_naissance": date_naissance, "comptes": comptes} )
+
+
+
 
     return redirect(url_for('client'))
 
@@ -142,6 +153,22 @@ def editClient():
     print(type(idt))
 
     return redirect(url_for('client'))
+
+
+@app.route('/client/<int:id>', methods=['GET'])
+def clientCompte(id):
+    url = 'http://localhost:9191/clients/'+str(id)
+    res = requests.get(url)
+    client = res.json()
+    nom = "du Client "+client['prenom']+" "+client['nom']
+
+    comptes = list(client['comptes'])
+
+    print(nom)
+    print(comptes)
+
+
+    return render_template('agenceCompte.html',comptes=comptes, nom = nom)
 ####################################################################### COMPTE ##############################################################
 
 @app.route('/compte')

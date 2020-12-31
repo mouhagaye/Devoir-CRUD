@@ -43,6 +43,7 @@
 						<th>Date de Naissance</th>
 						<th>Nom</th>
 						<th>Prenom</th>
+						<th>Comptes</th>
 						<th>Actions</th>
 					</tr>
 				</thead>
@@ -53,6 +54,7 @@
 						<td>{{context.date_naissance}}</td>
 						<td>{{context.nom}}</td>
 						<td>{{context.prenom}}</td>
+						<td><a href="{{url_for('clientCompte',id=context.id)}}">Comptes</a></td>
 						<td>
 							<a href="#editClient" onclick="sendCode('{{context.id}}')" class="edit" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
 							<a href="{{url_for('deleteClient',id=context.id)}}" ><i class="material-icons" title="Delete">&#xE872;</i></a>
@@ -97,7 +99,15 @@
 					<div class="form-group">
 						<label>Prenom</label>
 						<input type="text" name="prenom" class="form-control" required>	
-					</div>					
+					</div>
+					<div class="form-group">
+						<label>Comptes</label>
+						<select name="comptes" multiple data-live-search="true">
+							{% for compte in comptes %}
+							<option value={{compte.id}} >Compte = id: {{compte.id}} solde: {{compte.solde}} decouvert : {{compte.decouvert}}</option>
+							{%endfor%}
+						</select>
+					</div>				
 				</div>
 				<div class="modal-footer">
 					<input type="button" class="btn btn-default" data-dismiss="modal" value="Annuler">
